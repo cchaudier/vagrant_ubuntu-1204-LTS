@@ -19,7 +19,9 @@ run() {
 }
 
 test_os() {
-    grep $os_version /etc/issue >/dev/null|| trace "OS not $os_version" && sortie 1
+    trace "Test OS version"
+    grep "$os_version" /etc/issue >/dev/null|| (trace "OS not $os_version" && sortie 1)
+    trace "Os ok"
 
 }
 
@@ -45,7 +47,6 @@ create_user() {
 trace "Installation du minimal vital sur $os_version serveur"
 
 test_os
-sortie 0
 install_packages
 create_users
 sortie 0
