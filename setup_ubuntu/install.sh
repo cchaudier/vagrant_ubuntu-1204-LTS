@@ -14,7 +14,7 @@ trace() {
 }
 
 run() {
-    echo "==[cmd : $*i]=="
+    echo "==[cmd : $*]=="
     $* || sortie 1
 }
 
@@ -27,7 +27,7 @@ test_os() {
 
 install_packages(){
     trace "Installation packages"
-    run sudo 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list'
+    run sudo 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list'
     run sudo apt-get update 
     run sudo apt-get upgrade -y 
     run sudo apt-get dist-upgrade
@@ -36,15 +36,26 @@ install_packages(){
 }
 
 create_users() {
-    for user in $users; do
-        create_user $user
+    for user in ${!USERS[*]}; do
+        create_user $user ${USERS[${user}]}
     done
 }
 
 create_user() {
     user=$1
-    trace "Create user : $1user"
-    id $user || run sudo adduser $user --disabled-password
+    ssh_key=$2
+    trace "Create user : $user"
+    id $user || run sudo adduser $user --disabled-password --home /home/$user --shell zsh
+    run sudo mkdir -p /home/$user/.ssh
+    trace " Install SSH key $ssh_key"
+    run sudo touch /home/$user/.ssh/authorized_key
+    run sudo chmod 777 /home/$user/.ssh/authorized_key
+    curl $ssh_key > /home/$user/.ssh/authorized_key
+    run sudo chmod 600 /home/$user/.ssh/authorized_key
+    run sudo chmod 700 /home/$user/.ssh
+    run sudo chmod 750 /home/$user
+    run sudo chown -R $user:$user /home/$user
+
 }
 
 trace "Installation du minimal vital sur $os_version serveur"
