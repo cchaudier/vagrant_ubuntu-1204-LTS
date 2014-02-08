@@ -37,7 +37,7 @@ install_packages(){
 
 create_users() {
     for user in ${!USERS[*]}; do
-        create_user $user ${USERS[${user}]}
+        id $user >/dev/null || create_user $user ${USERS[${user}]}
     done
 }
 
@@ -45,7 +45,7 @@ create_user() {
     user=$1
     ssh_key=$2
     trace "Create user : $user"
-    id $user || run sudo adduser $user --disabled-password --home /home/$user --shell zsh
+    run sudo useradd $user -d /home/$user -m -s /bin/zsh
     run sudo mkdir -p /home/$user/.ssh
     trace " Install SSH key $ssh_key"
     run sudo touch /home/$user/.ssh/authorized_key
@@ -55,11 +55,14 @@ create_user() {
     run sudo chmod 700 /home/$user/.ssh
     run sudo chmod 750 /home/$user
     run sudo chown -R $user:$user /home/$user
-
+    trace " --> User $user created"
+    #Install oh-my-zsh
+    sudo su $user -c 'curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh'
 }
+
 
 trace "Installation du minimal vital sur $os_version serveur"
 test_os
-install_packages
+#install_packages
 create_users
 sortie 0
