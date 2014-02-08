@@ -7,7 +7,8 @@ Vagrant.configure("2") do |config|
 
   #Share folder
   config.vm.network "private_network", ip: "172.12.8.150"
-  config.vm.synced_folder "app", "/home/app", :nfs => true, :mount_options   => ['nolock,vers=3,udp']
+  #config.vm.synced_folder "docker", "/home/doker", :nfs => true, :mount_options   => ['nolock,vers=3,udp']
+  config.vm.synced_folder ".", "/app/", :nfs => true, :mount_options   => ['nolock,vers=3,udp']
 
   # Fix docker not being able to resolve private registry in VirtualBox
   config.vm.provider :virtualbox do |vb, override|
