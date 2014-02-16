@@ -1,11 +1,9 @@
 #!/bin/bash
-# Install ubuntu base
-
-. install.dist.cfg
+# Creat a user
 
 sortie() {
     rc=$1
-    test $rc -eq 0  && echo "Install completted." || echo "Install error [$rc]"
+    test $rc -eq 0  && echo "User $user created." || echo "Error [$rc] !"
     exit $rc
 }
 
@@ -18,32 +16,7 @@ run() {
     $* || sortie 1
 }
 
-test_os() {
-    trace "Test OS version"
-    grep "$os_version" /etc/issue >/dev/null|| (trace "OS not $os_version" && sortie 1)
-    trace " --> Os OK"
-
-}
-
-install_packages(){
-    trace "Installation packages"
-    run sudo 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list'
-    run sudo apt-get update 
-    run sudo apt-get upgrade -y 
-    run sudo apt-get dist-upgrade
-    run sudo apt-get install -y zsh curl git-core
-    trace " --> packages OK"
-}
-
-create_users() {
-    for user in ${!USERS[*]}; do
-        id $user >/dev/null || create_user $user ${USERS[${user}]}
-    done
-}
-
 create_user() {
-    user=$1
-    ssh_key=$2
     trace "Create user : $user"
     run sudo useradd $user -d /home/$user -m -s /bin/zsh
     run sudo mkdir -p /home/$user/.ssh
@@ -61,8 +34,9 @@ create_user() {
 }
 
 
-trace "Installation du minimal vital sur $os_version serveur"
-test_os
-#install_packages
-create_users
+user=$1
+ssh_key=$2
+
+trace "Creating the user $user with she ssh key $ssh_key"
+create_user
 sortie 0
