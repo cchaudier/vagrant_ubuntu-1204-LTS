@@ -33,6 +33,7 @@ install_packages(){
     run sudo apt-get dist-upgrade
     install_package zsh curl git-core vim
     install_package language-pack-fr
+    install_rcm
     trace " --> packages OK"
 }
 
@@ -40,6 +41,14 @@ install_package() {
     run sudo apt-get install -y $*
 }
 
+install_rcm() {
+    trace "Installation rcm"
+    cd /tmp
+    run wget http://thoughtbot.github.io/rcm/debs/rcm_1.2.0_all.deb
+    run sudo dpkg -i rcm_1.2.0_all.deb
+    rm -f rcm_1.2.0_all.deb
+    cd -
+}
 create_users() {
     trace "Creating all users... ${!USERS[*]}"
     for user in ${!USERS[*]}; do
