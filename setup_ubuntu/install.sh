@@ -31,7 +31,7 @@ install_packages(){
     run sudo apt-get update 
     run sudo apt-get upgrade -y 
     run sudo apt-get dist-upgrade
-    install_package zsh curl git-core
+    install_package zsh curl git-core vim
     install_package language-pack-fr
     trace " --> packages OK"
 }
@@ -50,6 +50,6 @@ create_users() {
 
 trace "Installation du minimal vital sur $os_version serveur"
 test_os
-#install_packages
+install_packages
 create_users
 sortie 0
