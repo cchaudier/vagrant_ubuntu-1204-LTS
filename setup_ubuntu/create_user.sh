@@ -29,8 +29,14 @@ create_user() {
     run sudo chmod 750 /home/$user
     run sudo chown -R $user:$user /home/$user
     trace " --> User $user created"
+}
+
+config_user() {
     #Install oh-my-zsh
     sudo su $user -c 'curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh'
+    #Instal dotfiles
+    run "cd && git clone git://github.com/thoughtbot/dotfiles.git && cd dotfiles && ./install.sh"
+
 }
 
 
@@ -39,4 +45,5 @@ ssh_key=$2
 
 trace "Creating the user $user with she ssh key $ssh_key"
 create_user
+config_user
 sortie 0
