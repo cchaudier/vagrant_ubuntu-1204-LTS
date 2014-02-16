@@ -5,7 +5,7 @@
 
 sortie() {
     rc=$1
-    test $rc -eq 0  && echo "Install completted." || echo "Install error [$rc]"
+    test $rc -eq 0  && echo "Install completed." || echo "Install error [$rc]"
     exit $rc
 }
 
@@ -27,21 +27,28 @@ test_os() {
 
 install_packages(){
     trace "Installation packages"
-    run sudo 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list'
+    #run sudo 'echo "deb http://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list'
     run sudo apt-get update 
     run sudo apt-get upgrade -y 
     run sudo apt-get dist-upgrade
-    run sudo apt-get install -y zsh curl git-core
+    install_package zsh curl git-core
+    install_package language-pack-fr
     trace " --> packages OK"
 }
 
+install_package() {
+    run sudo apt-get install -y $*
+}
+
 create_users() {
+    trace "Creating all users... ${!USERS[*]}"
     for user in ${!USERS[*]}; do
-        id $user >/dev/null || create_user $user ${USERS[${user}]}
+        trace "Create user : $user"
+        id $user >/dev/null || create_user.sh $user ${USERS[${user}]}
     done
 }
 
-create_user() {
+create_usersser() {
     user=$1
     ssh_key=$2
     trace "Create user : $user"
