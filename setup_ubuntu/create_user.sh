@@ -36,6 +36,9 @@ config_user() {
     sudo su $user -c 'curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh'
     #Instal dotfiles
     run "cd && git clone git://github.com/thoughtbot/dotfiles.git && cd dotfiles && ./install.sh"
+    #The Ultimate Vim Distribution
+    #http://vim.spf13.com/
+    curl http://j.mp/spf13-vim3 -L -o - | sh
 
 }
 
