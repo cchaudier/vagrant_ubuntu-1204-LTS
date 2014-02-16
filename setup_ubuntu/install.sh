@@ -48,26 +48,6 @@ create_users() {
     done
 }
 
-create_usersser() {
-    user=$1
-    ssh_key=$2
-    trace "Create user : $user"
-    run sudo useradd $user -d /home/$user -m -s /bin/zsh
-    run sudo mkdir -p /home/$user/.ssh
-    trace " Install SSH key $ssh_key"
-    run sudo touch /home/$user/.ssh/authorized_key
-    run sudo chmod 777 /home/$user/.ssh/authorized_key
-    curl $ssh_key > /home/$user/.ssh/authorized_key
-    run sudo chmod 600 /home/$user/.ssh/authorized_key
-    run sudo chmod 700 /home/$user/.ssh
-    run sudo chmod 750 /home/$user
-    run sudo chown -R $user:$user /home/$user
-    trace " --> User $user created"
-    #Install oh-my-zsh
-    sudo su $user -c 'curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh'
-}
-
-
 trace "Installation du minimal vital sur $os_version serveur"
 test_os
 #install_packages
